@@ -6,8 +6,8 @@ const GOOG_PWD = process.env.GOOG_PWD;
 const GOOG_SITES_URL =
   "https://sites.google.com/search/tinkertanker.com/tinkertanker-wiki?query=";
 
-let initializing = false;
 let page = null;
+let initialized = false;
 async function init() {
   // Disable the sandbox to run on Heroku
   const browser = await puppeteer.launch({
@@ -43,10 +43,10 @@ async function init() {
     );
     console.log(`Code: ${code}`);
   } catch (err) {
-    console.error(err);
+    // Do nothing
   }
 
-  initializing = false;
+  initialized = true;
 }
 
 // Search the wiki with a given query string
@@ -69,10 +69,10 @@ async function search(query) {
 // Scrape the given URL for the relevant data and format it
 async function scrape(url) {
   // Initialize the browser session if not already done
-  if (!page) {
-    if (initializing) return;
+  if (!initialized) {
+    // The browser is initializing, but not yet done
+    if (page) return [];
 
-    initializing = true;
     init();
 
     // Skip handling this request to allow time to sign into Google

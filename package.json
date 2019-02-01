@@ -4,8 +4,7 @@
   "description": "",
   "main": "index.mjs",
   "scripts": {
-    "start": "node -r dotenv/config --experimental-modules index.mjs",
-    "test": "node -r dotenv/config --experimental-modules test.mjs"
+    "start": "node -r dotenv/config --experimental-modules index.mjs"
   },
   "author": "",
   "license": "MIT",

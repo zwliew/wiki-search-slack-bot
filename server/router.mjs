@@ -1,5 +1,5 @@
 import express from "express";
-import handle from "./handler";
+import handler from "./handler";
 
 const TYPES = ["url_verification", "event_callback"];
 
@@ -22,7 +22,7 @@ router.post("/event", async (req, res) => {
   }
 
   // Otherwise, pass the event to the event handler
-  handle(event);
+  handler.handleEvent(event);
 
   res.status(202).end();
 });

@@ -1,4 +1,6 @@
 import puppeteer from "puppeteer";
+import fs from "fs";
+import path from "path";
 
 // Provide the Google username and password as environment variables
 const GOOG_USR = process.env.GOOG_USR;
@@ -24,10 +26,33 @@ async function init() {
   await page.click("#next");
   await page.waitForSelector('input[type="password"]', { visible: true });
   await page.type('input[type="password"]', GOOG_PWD);
-  await page.click('input[type="submit"]');
 
-  // Wait for the login to complete
-  await page.waitForNavigation();
+  await Promise.all([
+    page.click('input[type="submit"]'),
+    page.waitForNavigation()
+  ]);
+
+  // The two-factor verification process only appears during
+  // a 'suspicious' sign-in attempt
+  try {
+    await Promise.all([
+      page.click('input[type="submit"]'),
+      page.waitForNavigation()
+    ]);
+
+    // todo
+    await fs.promises.mkdir(path.resolve(path.dirname(""), "public"), {
+      recursive: true
+    });
+    await fs.promises.writeFile(
+      path.resolve(path.dirname(""), "public/verify.html"),
+      await page.content()
+    );
+  } catch (err) {
+    console.error(err);
+  }
+
+  initializing = false;
 }
 
 // Search the wiki with a given query string
@@ -54,12 +79,14 @@ async function scrape(url) {
     if (initializing) return;
 
     initializing = true;
-    await init();
+    init();
+
+    // Skip handling this request to allow time to sign into Google
+    console.log("Skipping request");
+    return [];
   }
 
   await page.goto(url);
-
-  console.log(await page.content());
 
   // Parse the page
   let attachments = [];

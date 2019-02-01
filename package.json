@@ -2,9 +2,10 @@
   "name": "google-sites-search",
   "version": "1.0.0",
   "description": "",
-  "main": "server/index.mjs",
+  "main": "index.mjs",
   "scripts": {
-    "start": "node --experimental-modules server/index.mjs"
+    "start": "node -r dotenv/config --experimental-modules index.mjs",
+    "test": "node -r dotenv/config --experimental-modules test.mjs"
   },
   "author": "",
   "license": "MIT",
@@ -12,6 +13,12 @@
     "axios": "^0.18.0",
     "body-parser": "^1.18.3",
     "cheerio": "^1.0.0-rc.2",
-    "express": "^5.0.0-alpha.7"
+    "dotenv": "^6.2.0",
+    "express": "^5.0.0-alpha.7",
+    "puppeteer": "^1.11.0"
+  },
+  "engines": {
+    "node": "^11.8.0",
+    "npm": "^6.5.0"
   }
 }

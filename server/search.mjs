@@ -1,6 +1,4 @@
 import puppeteer from "puppeteer";
-import fs from "fs";
-import path from "path";
 
 // Provide the Google username and password as environment variables
 const GOOG_USR = process.env.GOOG_USR;
@@ -40,14 +38,10 @@ async function init() {
       page.waitForNavigation()
     ]);
 
-    // todo
-    await fs.promises.mkdir(path.resolve(path.dirname(""), "public"), {
-      recursive: true
-    });
-    await fs.promises.writeFile(
-      path.resolve(path.dirname(""), "public/verify.html"),
-      await page.content()
+    const code = await (await page.$('div[jsname="EKvSSd"]')).getProperty(
+      "textContent"
     );
+    console.log(`Code: ${code}`);
   } catch (err) {
     console.error(err);
   }

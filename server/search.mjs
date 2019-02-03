@@ -83,15 +83,7 @@ async function scrape(url) {
   await page.goto(url);
 
   // Parse the page
-  let attachments = [];
-  const parsed = await parse(page);
-  if (parsed.length > 0) {
-    attachments = parsed.map(link => ({
-      text: `${link.text}\n${link.href}`
-    }));
-  }
-
-  return attachments;
+  return await parse(page);
 }
 
 // Given a page, parse it for the relevant data
@@ -99,13 +91,17 @@ async function parse(page) {
   const anchors = (await page.$$('a[jsname="bkmUnc"]')).slice(0, 3);
   if (anchors.length === 0) return [];
 
+  const descriptions = (await page.$$('div["TmR1rb"]'));
+
   return await Promise.all(
-    anchors.map(async anchor => ({
-      text: (await (await anchor.getProperty("textContent")).jsonValue())
+    anchors.map(async (anchor, idx) => ({
+      title: (await (await anchor.getProperty("textContent")).jsonValue())
         .toString()
         .split("-")[0]
         .trim(),
-      href: await (await anchor.getProperty("href")).jsonValue()
+      title_link: await (await anchor.getProperty("href")).jsonValue(),
+      text: descriptions.length > 0 ? null :
+          await (await descriptions[idx].getProperty("textContent")).jsonValue()
     }))
   );
 }

@@ -1,4 +1,4 @@
-import browse from './browser';
+import browse from "./browser";
 
 const GOOG_SITES_URL =
   "https://sites.google.com/search/tinkertanker.com/tinkertanker-wiki?query=";
@@ -27,7 +27,7 @@ async function search(query) {
 async function scrape(url) {
   // Initialize the browser session if not already done
   if (!page) {
-    browse(url).then(ret => page = ret);
+    browse(url).then(ret => (page = ret));
 
     // Skip handling this request to allow time to sign into Google
     console.log("Skipping request");
@@ -45,7 +45,7 @@ async function parse(page) {
   const anchors = (await page.$$('a[jsname="bkmUnc"]')).slice(0, 3);
   if (anchors.length === 0) return [];
 
-  const descriptions = (await page.$$('div["TmR1rb"]'));
+  const descriptions = await page.$$('div[class="TmR1rb"]');
 
   return await Promise.all(
     anchors.map(async (anchor, idx) => ({
@@ -54,8 +54,12 @@ async function parse(page) {
         .split("-")[0]
         .trim(),
       title_link: await (await anchor.getProperty("href")).jsonValue(),
-      text: descriptions.length > 0 ? null :
-          await (await descriptions[idx].getProperty("textContent")).jsonValue()
+      text:
+        descriptions.length > 0
+          ? await (await descriptions[idx].getProperty(
+              "textContent"
+            )).jsonValue()
+          : null
     }))
   );
 }

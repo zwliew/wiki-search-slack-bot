@@ -1,5 +1,9 @@
 import puppeteer from "puppeteer";
 
+// Read Google credentials from env
+const GOOG_USR = process.env.GOOG_USR;
+const GOOG_PWD = process.env.GOOG_PWD;
+
 // Starts a new Google-authenticated browser session and
 // returns the current page for browsing
 async function browse(url) {
@@ -14,10 +18,10 @@ async function browse(url) {
 
   // Log into Google account
   await page.waitForSelector('input[type="email"]');
-  await page.type('input[type="email"]', process.env.GOOG_USR);
+  await page.type('input[type="email"]', GOOG_USR);
   await page.click("#next");
   await page.waitForSelector('input[type="password"]', { visible: true });
-  await page.type('input[type="password"]', process.env.GOOG_PWD);
+  await page.type('input[type="password"]', GOOG_PWD);
 
   await Promise.all([
     page.click('input[type="submit"]'),
@@ -34,7 +38,7 @@ async function browse(url) {
 
     const code = await (await page.$('div[jsname="EKvSSd"]')).getProperty(
       "textContent"
-      );
+    );
     console.log(`Code: ${code}`);
   } catch (err) {
     // Do nothing

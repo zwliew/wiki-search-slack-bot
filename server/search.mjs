@@ -56,9 +56,13 @@ async function parse(page) {
       title_link: await (await anchor.getProperty("href")).jsonValue(),
       text:
         descriptions.length > 0
-          ? await (await descriptions[idx].getProperty(
-              "textContent"
-            )).jsonValue()
+          ? (await (await descriptions[idx].getProperty(
+              "innerHTML"
+            )).jsonValue())
+              .toString()
+              .replace(/&nbsp;/g, " ")
+              .trim()
+              .replace(/<b>(.+?)<\/b>/g, "*$1*")
           : null
     }))
   );

@@ -12,7 +12,7 @@
     "axios": "^0.18.0",
     "body-parser": "^1.18.3",
     "dotenv": "^6.2.0",
-    "express": "^5.0.0-alpha.7",
+    "express": "^5.0.0-alpha.8",
     "helmet": "^3.15.0",
     "puppeteer": "^1.11.0"
   },
